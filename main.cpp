@@ -4,37 +4,64 @@
 #include <stdio.h>
 #include <time.h>
 #include <limits.h>
-#include <windows.h>
+#include <Windows.h>
+#include <MMSystem.h>
+#include <fstream>
 using namespace std;
 
-void error(int y){
-while (cin.fail()){
-        cin.clear();
-        cin.ignore(INT_MAX, '\n');
-        cout << "You can only enter numbers:\n";
-        cin >> y;}
-}
-
-int main(){
-system("color 3f");
-srand(time(NULL));
 //Variables
 int num;
 int guesses=0;
 int maxGuess=0;
 int gamemode;
 int x;
+int logStat;
 string lang;
+string z;
+
+void error(int y){
+while (cin.fail()){
+        cin.clear();
+        cin.ignore(INT_MAX, '\n');
+        cout << "You can only enter numbers smaller than 10 digits:";
+        cin >> y;}
+}
+
+void fin(string m){
+    system("cls");
+    Sleep(1000);
+
+    for(int i=0;i<m.length();i++){
+        cout<<m[i];
+        Sleep(150);}
+
+    Sleep(500);
+    cout<<endl;
+}
+
+int main(){
+//Win Log
+fstream Guess;
+Guess.open("WinLog.txt",ofstream::app);
+if(!Guess.is_open()){
+    cout<<"LOG ERROR.UNABLE TO KEEP TRACK OF ACTIVITY"<<endl;
+}
+
+//PlaySound(TEXT("sound.wav"),NULL,SND_ASYNC);
+system("color 3f");
+srand(time(NULL));
 
 //!Language
-cout<<"Chose your language(EN;RO):"<<endl;
+cout<<"Chose your language(EN;RO):";
 cin>>lang;
+cout<<endl;
 
 //Invalid language
 while(lang != "en" && lang != "En" && lang != "EN" && lang != "english" && lang != "English" && lang != "ro" && lang != "Ro" && lang != "RO" && lang != "romana" && lang != "Romana" && lang != "romanian" && lang != "Romanian"){
     cout<<"Invalid language"<<endl<<endl;
-    cout<<"Chose your language(EN;RO):"<<endl;
+    cout<<"Chose your language(EN;RO):";
     cin>>lang;
+    cout<<endl;
 }
 
 //!English
@@ -43,11 +70,11 @@ if(lang == "en" || lang == "En" || lang == "EN" || lang == "english" || lang == 
 cout<<"Working on the program";
 for(int i=0;i<3;i++){
     cout<<".";
-    Sleep(1000);
+    Sleep(500);
 }
 system("cls");
 
-delete &lang;
+
 //Artwork
 cout<<"THE"<<endl;
 cout<<"  GUESSING"<<endl;
@@ -78,59 +105,60 @@ cout<<""<<endl;
 
 
 //Initializing the secret number
-cout<<"Press ENTER to play:"<<endl;
+cout<<"Press ENTER to play";
 cin.get();
 cin.get();
+cout<<endl;
 
-cout<<"Enter your number range: "<<endl;
-cin>>x;
-error(x);
+cout<<"Enter your number range:";
+cin>>x;error(x);
+cout<<endl;
+
 while(x==0){
-    cout<<"Must enter a number higher or lower than 0:"<<endl;
-    cin>>x;
-    while (cin.fail()){
-        cin.clear();
-        cin.ignore(INT_MAX, '\n');
-        cout << "You can only enter numbers:\n";
-        cin >> x;}
+    cout<<"Must enter a number higher or lower than 0:";
+    cin>>x;error(x);
+    cout<<endl;
 }
 int sNum=rand()%x+1;
-delete &x;
 
 //Gamemode choser
-cout<<"Enter your gamemode(0-Guess limit,1-No guess limit):"<<endl;
-cin>>gamemode;
-error(gamemode);
+cout<<"Enter your gamemode(0-Guess limit,1-No guess limit):";
+cin>>gamemode;error(gamemode);
+cout<<endl;
 
 while(gamemode > 1 || gamemode < 0){
-    cout<<gamemode<<" is not a gamemode.Enter your gamemode:"<<endl;
-    cin>>gamemode;
-    error(gamemode);
+    cout<<gamemode<<" is not a gamemode.Enter your gamemode:";
+    cin>>gamemode;error(gamemode);
+    cout<<endl;
     }
 
 if(gamemode == 0){
-cout<<"Enter the guesses limit(Ex:0 for 1 guess):"<<endl;
-cin>>maxGuess;
-error(maxGuess);
-    while(maxGuess<0){
-        cout<<"You can only enter a positive value(+):"<<endl;
-        cin>>maxGuess;
-        error(maxGuess);
+cout<<"Enter the guesses limit:";
+cin>>maxGuess;error(maxGuess);
+cout<<endl;
+    while(maxGuess<=0){
+        cout<<"You can only enter a positive value(+):";
+        cin>>maxGuess;error(maxGuess);
+        cout<<endl;
     }
+maxGuess -= 1;
 }
 
 //!Gamemode 0
 if(gamemode==0){
-delete &gamemode;
 
-cout<<"Guess the secret number:"<<endl;
-cin>>num;
-error(num);
+
+cout<<"Guess the secret number:";
+cin>>num;error(num);
+cout<<endl;
 //The main while
 while(num != sNum && guesses<maxGuess){
 //Give up
     if(num == -99){
-        cout<<"You gave up...The number was "<<sNum<<endl;
+        z="You gave up...";
+        fin(z);
+
+        Guess<<"State:Lost(Gave up)(Gamemode 0)"<<endl;
         break;
     }
 //Admin comands
@@ -139,12 +167,11 @@ while(num != sNum && guesses<maxGuess){
         cout<<"Values:-333"<<endl;
         cout<<"Secret Number:-909"<<endl;
         cout<<"System:-12345"<<endl<<endl;
-        cout<<"Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
     }
     else if(num == -333){
-        cout<<" "<<endl;
         cout<<"Admin comands(Values):"<<endl;
         cout<<"1.Secret number: "<<sNum<<endl;
         cout<<"2.Number: "<<num<<endl;
@@ -152,56 +179,60 @@ while(num != sNum && guesses<maxGuess){
         cout<<"4.Max guesses: "<<maxGuess<<endl;
         cout<<"5.Gamemode: "<<gamemode<<endl;
         cout<<"6.Language: "<<lang<<endl<<endl;
-        cout<<"Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
     }
         else if(num == -909){
-        cout<<""<<endl;
         cout<<"Admin comands(Secret Number):"<<endl;
         cout<<"Secret number:"<<sNum<<endl;
-        cout<<"Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
     }
         else if(num == -12345){
-        cout<<""<<endl;
         cout<<"Admin comands(System):"<<endl;
             if(system(NULL)){
                 cout<<"Command processor exists"<<endl<<endl;
-                cout<<"Guess the secret number:"<<endl;
-                cin>>num;
-                error(num);
+                cout<<"Guess the secret number:";
+                cin>>num;error(num);
+                cout<<endl;
             }
             else{
                 cout<<"Command processor doesn't exists"<<endl;
-                cout<<"Guess the secret number:"<<endl;
-                cin>>num;
-                error(num);
+                cout<<"Guess the secret number:";
+                cin>>num;error(num);
+                cout<<endl;
             }
         }
 //Too low
 
     else if(num<sNum){
-        cout<<"Too low.Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Too low.Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
         guesses++;
     }
 //Too high
     else if(num>sNum){
-        cout<<"Too high.Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Too high.Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
         guesses++;
     }
 }
 //Out of guesses
     if(guesses >= maxGuess && sNum != num && num != -99){
-        cout<<"Too many guesses.You lost..."<<endl;
-}
+        z="Too many guesses.You lost...";
+        fin(z);
+
+        Guess<<"Lost(Too Many Guesses)(Gamemode 0)"<<endl;
+    }
     else if(num == -99 && guesses==maxGuess){
-        cout<<"You gave up...The number was "<<sNum<<endl;
+        z="You gave up...";
+        fin(z);
+
+        Guess<<"State:Lost(Gave up)(Gamemode 0)"<<endl;
     }
 //Correct
 
@@ -209,29 +240,30 @@ while(num != sNum && guesses<maxGuess){
 }
 //!Gamemode 1
 else if(gamemode==1){
-delete &maxGuess;
-delete &guesses;
-delete &gamemode;
 
-cout<<"Guess the secret number:"<<endl;
-cin>>num;
-    error(num);
+cout<<"Guess the secret number:";
+cin>>num;error(num);
+cout<<endl;
 
 //Main while
 while(num != sNum){
 //Give up
     if(num == -99){
-        cout<<"You gave up...The number was "<<sNum<<endl;
-        break;}
+
+    z="You gave up...";
+    fin(z);
+
+    Guess<<"State:Lost(Gave up)(Gamemode 1)"<<endl;
+    break;}
 //Admin comand
     else if(num == -101){
         cout<<"Admin comands(Comands):"<<endl;
         cout<<"Values:-333"<<endl;
         cout<<"Secret Number:-909"<<endl;
         cout<<"System:-12345"<<endl<<endl;
-        cout<<"Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
     }
     else if(num == -333){
         cout<<" "<<endl;
@@ -242,45 +274,45 @@ while(num != sNum){
         cout<<"4.Max guesses: "<<maxGuess<<endl;
         cout<<"5.Gamemode: "<<gamemode<<endl;
         cout<<"6.Language: "<<lang<<endl<<endl;
-        cout<<"Guess the secret number: "<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
     }
     else if(num == -909){
         cout<<""<<endl;
         cout<<"Admin comands(Secret Number):"<<endl;
         cout<<"Secret number: "<<sNum<<endl<<endl;
-        cout<<"Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
     }
     else if(num == -12345){
         cout<<""<<endl;
         cout<<"Admin comands(System):"<<endl;
             if(system(NULL)){
                 cout<<"Command processor exists"<<endl<<endl;
-                cout<<"Guess the secret number:"<<endl;
-                cin>>num;
-                error(num);
+                cout<<"Guess the secret number:";
+                cin>>num;error(num);
+                cout<<endl;
             }
             else{
                 cout<<"Command processor doesn't exists"<<endl;
-                cout<<"Guess the secret number:"<<endl;
-                cin>>num;
-                error(num);
+                cout<<"Guess the secret number:";
+                cin>>num;error(num);
+                cout<<endl;
             }
     }
 //Too low
     else if(num<sNum){
-        cout<<"Too low.Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Too low.Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
     }
 //Too high
     else if(num>sNum){
-        cout<<"Too high.Guess the secret number:"<<endl;
-        cin>>num;
-        error(num);
+        cout<<"Too high.Guess the secret number:";
+        cin>>num;error(num);
+        cout<<endl;
     }
 }
 
@@ -288,17 +320,21 @@ while(num != sNum){
 
 //Correct
 if(num==sNum){
-    cout<<"Correct! You guessed the number!"<<endl;
+    z="Correct! You guessed the secret number!";
+    fin(z);
+
+    Guess<<"State:Won"<<endl;
 }
 
 
 
 //Feedback
-cout<<" "<<endl;
+cout<<endl;
 cout<<"I hope you liked my game!"<<endl<<endl;
-cout<<"Press ENTER to exit"<<endl;
+cout<<"Press ENTER to exit";
 cin.get();
 cin.get();
+Guess.close();
 }
 
 //--------------------------------------------------------------------------------
@@ -309,11 +345,10 @@ else if(lang == "ro" || lang == "Ro" || lang == "RO" || lang == "romanian" || la
 cout<<"Lucrand la program";
 for(int i=0;i<3;i++){
     cout<<".";
-    Sleep(1000);
+    Sleep(500);
 }
 system("cls");
 
-delete &lang;
 //Artwork
 cout<<"GHICESTE"<<endl;
 cout<<"    NUMARUL"<<endl;
@@ -341,8 +376,6 @@ for(int i=0;i<=75;i++){
 cout<<char(188);
 cout<<""<<endl;
 
-
-
 //Initializing the secret number
 cout<<"Apasa ENTER pentru a juca:"<<endl;
 cin.get();
@@ -364,9 +397,8 @@ while(x==0){
         cout << "Puteti introduce doar numere:\n";
         cin >> x;}
     }
-
 int sNum=rand()%x+1;
-delete &x;
+
 //Gamemode choser
 cout<<"Introduceti modul de joc(0-Cu limita de incercari,1-Fara limita):"<<endl;
 cin>>gamemode;
@@ -388,7 +420,7 @@ while(gamemode > 1 || gamemode < 0){
 
 if(gamemode == 0){
 
-cout<<"Introduceti limita de incercari(Ex:0 pentru 1 incercare):"<<endl;
+cout<<"Introduceti limita de incercari:"<<endl;
 cin>>maxGuess;
 while (cin.fail()){
         cin.clear();
@@ -399,11 +431,11 @@ while (cin.fail()){
         cout<<"Puteti introduce doar valori pozitive(+):"<<endl;
         cin>>maxGuess;
     }
+maxGuess += 1;
 }
 
 //!Gamemode 0
 if(gamemode==0){
-delete &gamemode;
 
 cout<<"Ghiciti numarul secret"<<endl;
 cin>>num;
@@ -487,7 +519,7 @@ while(num != sNum && guesses<maxGuess){
 }
 //Out of guesses
     if(guesses >= maxGuess && sNum != num && num != -99){
-        cout<<"Prea multe incercari.Ati pierdut..."<<endl;
+        cout<<"Prea multe incercari.Ati pierdut...Numarul era "<<sNum<<endl;
 }
     else if(num == -99 && guesses==maxGuess){
         cout<<"V-ati dat batut...Numarul era "<<sNum<<endl;
@@ -498,7 +530,6 @@ while(num != sNum && guesses<maxGuess){
 }
 //!Gamemode 1
 else if(gamemode==1){
-delete &gamemode;
 
 cout<<"Ghiciti numarul secret:"<<endl;
 cin>>num;
@@ -594,12 +625,14 @@ cout<<"Apasati ENTER pentru a iesi"<<endl;
 cin.get();
 cin.get();
 
-
 }
-
-
-
-
+delete &num;
+delete &guesses;
+delete &maxGuess;
+delete &gamemode;
+delete &x;
+delete &lang;
+delete &z;
 
     return 0;
 }
